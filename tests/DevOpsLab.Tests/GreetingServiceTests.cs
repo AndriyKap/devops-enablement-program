@@ -6,7 +6,7 @@ namespace DevOpsLab.Tests;
 public class GreetingServiceTests
 {
     [Theory]
-    [InlineData("Andriy", "Hello, Andriy!")]
+    [InlineData("Andriy", "Hello, Andriy?")]
     [InlineData("  Kate  ", "Hello, Kate!")]
     [InlineData(null, "Hello, world!")]
     [InlineData("   ", "Hello, world!")]
