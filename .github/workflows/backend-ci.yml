@@ -1,0 +1,53 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore DevOpsLab.slnx
+
+      - name: Build solution
+        run: dotnet build DevOpsLab.slnx --configuration Release --no-restore
+
+      - name: Upload test-binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-binaries
+          path: tests/DevOpsLab.Tests/bin/Release/net10.0/
+          if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Download test-binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: test-binaries
+          path: test-binaries
+
+      - name: Run tests from compiled DLL
+        run: dotnet test test-binaries/DevOpsLab.Tests.dll

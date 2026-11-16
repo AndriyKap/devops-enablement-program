@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/DevOpsLab.Api/DevOpsLab.Api.csproj" />
+  <Project Path="tests/DevOpsLab.Tests/DevOpsLab.Tests.csproj" />
+</Solution>
