@@ -34,6 +34,16 @@ jobs:
           path: tests/DevOpsLab.Tests/bin/Release/net10.0/
           if-no-files-found: error
 
+      - name: Publish API
+        run: dotnet publish src/DevOpsLab.Api/DevOpsLab.Api.csproj --configuration Release --no-build --output artifacts/api
+
+      - name: Upload api-publish
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-publish
+          path: artifacts/api/
+          if-no-files-found: error
+
   test:
     needs: build
     runs-on: ubuntu-latest
