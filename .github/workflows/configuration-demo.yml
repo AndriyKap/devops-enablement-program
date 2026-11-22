@@ -2,6 +2,9 @@ name: Configuration Demo
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/m03-secrets-variables
 
 env:
   APP_NAME: PigSense
