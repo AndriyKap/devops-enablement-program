@@ -1,0 +1,45 @@
+name: Reusable Multi-Environment Deploy
+
+on:
+  workflow_call:
+    inputs:
+      target_environment:
+        description: 'Target deployment environment (dev, staging, production)'
+        required: true
+        type: string
+    secrets:
+      demo_token:
+        description: 'API token for simulated deployment verification'
+        required: true
+
+permissions: {}
+
+jobs:
+  deploy:
+    name: Deploy (${{ inputs.target_environment }})
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.target_environment }}
+      url: ${{ vars.API_URL }}
+
+    steps:
+      - name: Validate configuration and run simulated deployment
+        env:
+          TARGET_ENV: ${{ inputs.target_environment }}
+          TARGET_URL: ${{ vars.API_URL }}
+          DEMO_TOKEN: ${{ secrets.demo_token }}
+        run: |
+          if [ -z "$TARGET_URL" ]; then
+            echo "::error::API_URL variable is not configured for environment '$TARGET_ENV'"
+            exit 1
+          fi
+
+          if [ -z "$DEMO_TOKEN" ]; then
+            echo "::error::Secret demo_token is missing or empty"
+            exit 1
+          fi
+
+          echo "Environment: $TARGET_ENV"
+          echo "URL: $TARGET_URL"
+          echo "Token check: verified (value not logged)"
+          echo "Status: Simulated deployment successful (no real Azure resources touched)"
