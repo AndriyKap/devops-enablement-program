@@ -1,0 +1,28 @@
+name: Configuration Demo
+
+on:
+  workflow_dispatch:
+
+env:
+  APP_NAME: PigSense
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check configuration and secrets
+        env:
+          APP_VERSION: ${{ vars.APP_VERSION }}
+          DEMO_API_TOKEN: ${{ secrets.DEMO_API_TOKEN }}
+        run: |
+          echo "App Name: $APP_NAME"
+          echo "App Version: $APP_VERSION"
+          echo "Git Ref: $GITHUB_REF"
+          echo "Git Branch: $GITHUB_REF_NAME"
+
+          if [ -n "$DEMO_API_TOKEN" ]; then
+            echo "DEMO_API_TOKEN is set and not empty."
+          else
+            echo "Error: DEMO_API_TOKEN is empty or not set."
+            exit 1
+          fi
