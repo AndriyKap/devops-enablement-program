@@ -18,33 +18,20 @@ on:
       - feature/m03-secrets-variables
     paths:
       - '.github/workflows/simulated-multi-environment-deploy.yml'
+      - '.github/workflows/reusable-deploy.yml'
 
 permissions: {}
 
 jobs:
   deploy:
     name: Deploy to ${{ matrix.target }}
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       # Manual runs select one environment; branch smoke tests check dev + production.
       matrix:
         target: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.environment)) || fromJSON('["dev","production"]') }}
-    environment:
-      name: ${{ matrix.target }}
-      url: ${{ vars.API_URL }}
-
-    steps:
-      - name: Run simulated deployment
-        env:
-          TARGET_ENV: ${{ matrix.target }}
-          TARGET_URL: ${{ vars.API_URL }}
-        run: |
-          if [ -z "$TARGET_URL" ]; then
-            echo "::error::API_URL is not configured for $TARGET_ENV"
-            exit 1
-          fi
-
-          echo "Environment: $TARGET_ENV"
-          echo "URL: $TARGET_URL"
-          echo "Status: Simulation successful"
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      target_environment: ${{ matrix.target }}
+    secrets:
+      demo_token: ${{ secrets.DEMO_API_TOKEN }}
