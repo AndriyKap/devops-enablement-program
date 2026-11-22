@@ -32,16 +32,16 @@ jobs:
         target: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.environment)) || fromJSON('["dev","production"]') }}
     environment:
       name: ${{ matrix.target }}
-      url: ${{ vars.APP_URL }}
+      url: ${{ vars.API_URL }}
 
     steps:
       - name: Run simulated deployment
         env:
           TARGET_ENV: ${{ matrix.target }}
-          TARGET_URL: ${{ vars.APP_URL }}
+          TARGET_URL: ${{ vars.API_URL }}
         run: |
           if [ -z "$TARGET_URL" ]; then
-            echo "::error::APP_URL is not configured for $TARGET_ENV"
+            echo "::error::API_URL is not configured for $TARGET_ENV"
             exit 1
           fi
 
