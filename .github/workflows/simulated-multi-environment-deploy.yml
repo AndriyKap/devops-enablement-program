@@ -27,9 +27,9 @@ jobs:
     name: Deploy to ${{ matrix.target }}
     strategy:
       fail-fast: false
-      # Manual runs select one environment; branch smoke tests check dev + production.
+      # Manual runs select one environment; branch smoke tests check dev + staging; production approval is separately verified.
       matrix:
-        target: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.environment)) || fromJSON('["dev","production"]') }}
+        target: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.environment)) || fromJSON('["dev","staging"]') }}
     uses: ./.github/workflows/reusable-deploy.yml
     with:
       target_environment: ${{ matrix.target }}
