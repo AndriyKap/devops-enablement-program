@@ -47,6 +47,22 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: devops
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: devops_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U devops -d devops_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v6
@@ -60,6 +76,8 @@ jobs:
           path: test-binaries
 
       - name: Run tests from compiled DLL
+        env:
+          TEST_DATABASE_CONNECTION: Host=localhost;Port=5432;Database=devops_test;Username=devops;Password=testpassword
         run: >
           dotnet test test-binaries/DevOpsLab.Tests.dll
           --logger "trx;LogFileName=test-results.trx"
