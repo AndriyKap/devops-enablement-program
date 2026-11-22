@@ -1,0 +1,63 @@
+name: Multi-Stack CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  nodejs-ci:
+    name: Node.js CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: labs/node
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: labs/node/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run integration tests
+        run: npm run test:integration
+
+  java-ci:
+    name: Java CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: labs/java
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+          cache-dependency-path: labs/java/pom.xml
+
+      - name: Build and test with Maven
+        run: mvn -B verify
