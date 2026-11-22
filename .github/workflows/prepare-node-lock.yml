@@ -1,0 +1,23 @@
+name: Prepare Node lockfile (temporary)
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  node-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Generate npm lockfile
+        working-directory: labs/node
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Print lockfile for commit
+        run: sed 's/^/LOCKDATA:/' labs/node/package-lock.json
