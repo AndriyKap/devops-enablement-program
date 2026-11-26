@@ -62,8 +62,8 @@ jobs:
           file: ./src/DevOpsLab.Api/Dockerfile
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_REPOSITORY }}:m04-sha-${{ github.sha }}
-            ${{ vars.DOCKERHUB_REPOSITORY }}:m04-test
+            ${{ vars.DOCKERHUB_USERNAME }}/devopslab-api:m04-sha-${{ github.sha }}
+            ${{ vars.DOCKERHUB_USERNAME }}/devopslab-api:m04-test
           labels: |
             org.opencontainers.image.source=https://github.com/AndriyKap/devops-enablement-program
           secrets: |
@@ -73,4 +73,4 @@ jobs:
 
       - name: Verify Docker Hub image manifest
         if: ${{ github.event_name == 'push' && vars.DOCKERHUB_PUBLISH_ENABLED == 'true' }}
-        run: docker buildx imagetools inspect "${{ vars.DOCKERHUB_REPOSITORY }}:m04-test"
+        run: docker buildx imagetools inspect "${{ vars.DOCKERHUB_USERNAME }}/devopslab-api:m04-test"
