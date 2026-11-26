@@ -70,3 +70,7 @@ jobs:
             nuget_token=dummy-test-token
           build-args: |
             COMMIT_SHA=${{ github.sha }}
+
+      - name: Verify Docker Hub image manifest
+        if: ${{ github.event_name == 'push' && vars.DOCKERHUB_PUBLISH_ENABLED == 'true' }}
+        run: docker buildx imagetools inspect "${{ vars.DOCKERHUB_REPOSITORY }}:m04-test"
