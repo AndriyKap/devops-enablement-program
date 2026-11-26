@@ -46,6 +46,21 @@ jobs:
           build-args: |
             COMMIT_SHA=${{ github.sha }}
 
+      # M04 learning scan: report HIGH/CRITICAL findings without failing on vulnerabilities.
+      # The action is pinned by commit SHA due to the March 2026 supply-chain incident.
+      - name: Trivy scan (GHCR image)
+        if: ${{ github.event_name == 'push' }}
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ghcr.io/andriykap/devopslab-api:m04-sha-${{ github.sha }}
+          scan-type: image
+          version: v0.76.2
+          format: table
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+
       # Docker Hub publishing is opt-in. Set repo variables and token, then enable.
       - name: Login to Docker Hub
         if: ${{ github.event_name == 'push' && vars.DOCKERHUB_PUBLISH_ENABLED == 'true' }}
