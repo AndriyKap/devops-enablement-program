@@ -1,0 +1,32 @@
+# Git та інфраструктура репозиторію
+.git
+.github
+.gitignore
+
+# IDE та локальні налаштування
+.vs
+.vscode
+.idea
+*.user
+*.suo
+
+# Локальні артефакти збірки та логи .NET
+**/bin/
+**/obj/
+**/out/
+publish/
+TestResults/
+*.log
+
+# Секрети та локальні конфіги
+.env
+.env.*
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Файли Docker та документація
+**/Dockerfile*
+docker-compose*
+.dockerignore
+README.md
+docs/
